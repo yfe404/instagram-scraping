@@ -1,0 +1,15 @@
+* Deskgram-Scraping
+Python script to scrap deskgram (Deskgram is a desktop version of Instagram)
+
+** Usage
+
+Scrap all photos and captions from a USER:
+#+BEGIN_SRC sh
+python main.py --user USER
+#+END_SRC
+
+Print help: 
+#+BEGIN_SRC sh
+python main.py --help
+#+END_SRC
+
