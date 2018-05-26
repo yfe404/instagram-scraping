@@ -6,9 +6,11 @@ import requests
 from bs4 import BeautifulSoup
         
 @click.command()
+@click.option('--captions/--no-captions', default=True,
+              help='Scrap also captions.')
 @click.option('--user', '-u', required=True,
               help='The account to scrap (all photos and all captions).')
-def scrap(user):
+def scrap(captions, user):
     """ Scrap photos and captions from posts of a single user """
     BASE_URL = 'https://deskgram.org'
     USER = user
@@ -19,21 +21,25 @@ def scrap(user):
         os.makedirs(dest_folder)
     
     img_url_all = list()
-    caption_all = list()
+
+    if captions:
+        caption_all = list()
 
     r = requests.get(start_url)
     soup = BeautifulSoup(r.text, 'html.parser')
-    captions = soup.findAll("div", {"class": "post-caption"})
+    if captions:
+        captions = soup.findAll("div", {"class": "post-caption"})
     images = soup.findAll("div", {"class": "post-img"})
 
     for image in images:
         img_url = image.img['src'].split('?')[0]
         img_url_all.append(img_url)
 
-    for caption in captions:
-        caption_all.append(caption.text)
+    if captions:
+        for caption in captions:
+            caption_all.append(caption.text)
 
-    print ('Found {0} captions.'.format(len(captions)))
+        print ('Found {0} captions.'.format(len(captions)))
     print ('Found {0} images.'.format(len(images)))
 
     while True:
@@ -47,18 +53,20 @@ def scrap(user):
             print ('fetching {0}'.format(next_url))
             r = requests.get(next_url)
             soup = BeautifulSoup(r.text, 'html.parser')
-            captions = soup.findAll("div", {"class": "post-caption"})
+            if captions:
+                captions = soup.findAll("div", {"class": "post-caption"})
             images = soup.findAll("div", {"class": "post-img"})
 
             for image in images:
                 img_url = image.img['src'].split('?')[0]
                 img_url_all.append(img_url)
 
-            for caption in captions:
-                caption_all.append(caption.text)
+            if captions:
+                for caption in captions:
+                    caption_all.append(caption.text)
 
-
-            print ('Found {0} captions.'.format(len(captions)))
+            
+                print ('Found {0} captions.'.format(len(captions)))
             print ('Found {0} images.'.format(len(images)))
 
     for idx, img_url in enumerate(img_url_all):
@@ -68,14 +76,14 @@ def scrap(user):
         print('saving image {0}'.format(filename))
         with open(filename, 'wb') as handler:
             handler.write(img_data)
-     
-    for idx, caption in enumerate(caption_all):
-        filename = '{0}_{1}.txt'.format(USER, idx)
-        filename = os.path.join(dest_folder, filename)
-        print('saving caption {0}'.format(filename))
-        text_file = open(filename, 'w')
-        text_file.write(caption)
-        text_file.close()
+    if captions:
+        for idx, caption in enumerate(caption_all):
+            filename = '{0}_{1}.txt'.format(USER, idx)
+            filename = os.path.join(dest_folder, filename)
+            print('saving caption {0}'.format(filename))
+            text_file = open(filename, 'w')
+            text_file.write(caption)
+            text_file.close()
 
 
 if __name__ == '__main__':
