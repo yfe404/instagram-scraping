@@ -1,10 +1,12 @@
+import os
+
 import click
 
 import requests
 from bs4 import BeautifulSoup
         
 @click.command()
-@click.option('--user', required=True,
+@click.option('--user', '-u', required=True,
               help='The account to scrap (all photos and all captions).')
 def scrap(user):
     """ Scrap photos and captions from posts of a single user """
@@ -12,7 +14,10 @@ def scrap(user):
     USER = user
 
     start_url = BASE_URL + '/' + USER
-
+    dest_folder = './{0}'.format(USER)
+    if not os.path.exists(dest_folder):
+        os.makedirs(dest_folder)
+    
     img_url_all = list()
     caption_all = list()
 
@@ -59,12 +64,14 @@ def scrap(user):
     for idx, img_url in enumerate(img_url_all):
         img_data = requests.get(img_url).content
         filename = '{0}_{1}.jpg'.format(USER, idx)
+        filename = os.path.join(dest_folder, filename)
         print('saving image {0}'.format(filename))
         with open(filename, 'wb') as handler:
             handler.write(img_data)
      
     for idx, caption in enumerate(caption_all):
         filename = '{0}_{1}.txt'.format(USER, idx)
+        filename = os.path.join(dest_folder, filename)
         print('saving caption {0}'.format(filename))
         text_file = open(filename, 'w')
         text_file.write(caption)
