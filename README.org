@@ -17,7 +17,7 @@ Options:
   --help                      Show this message and exit.
 #+END_SRC
 
-Example: 
+Examples: 
 - Download all images AND captions from account USER:
 #+BEGIN_SRC sh
 python main.py --user USER
@@ -28,12 +28,12 @@ python main.py --user USER
 python main.py --user USER --no-captions
 #+END_SRC
 
--Download captions only from account USER:
+- Download captions only from account USER:
 #+BEGIN_SRC sh
 python main.py --user USER --no-images
 #+END_SRC
 
-Print help: 
+- Print help: 
 #+BEGIN_SRC sh
 python main.py --help
 #+END_SRC
