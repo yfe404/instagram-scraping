@@ -76,6 +76,8 @@ def scrap(images, captions, user):
     DEST_FOLDER = './{0}'.format(USER)
 
     url = BASE_URL + '/' + USER
+    img_url_all = list() if images else None
+    caption_all = list() if captions else None
 
     if not os.path.exists(DEST_FOLDER):
         os.makedirs(DEST_FOLDER)
@@ -86,7 +88,6 @@ def scrap(images, captions, user):
         soup = BeautifulSoup(r.text, 'html.parser')
 
         if images:
-            img_url_all = list()
             images = soup.findAll(**PATTERN_FOR_IMAGES)
             for image in images:
                 img_url = image.img['src'].split('?')[0]
@@ -94,7 +95,6 @@ def scrap(images, captions, user):
             print('Found {0} images.'.format(len(images)))
 
         if captions:
-            caption_all = list()
             captions = soup.findAll(**PATTERN_FOR_CAPTIONS)
             for caption in captions:
                 caption_all.append(caption.text)
