@@ -5,7 +5,32 @@ Python script to scrap deskgram (Deskgram is a desktop version of Instagram)
 
 Scrap all photos and captions from a USER:
 #+BEGIN_SRC sh
+Usage: main.py [OPTIONS]
+
+  Scrap photos and captions from posts of a single user
+
+Options:
+  --images / --no-images      Scrap also images.
+  --captions / --no-captions  Scrap also captions.
+  -u, --user TEXT             The account to scrap (all photos and all
+                              captions).  [required]
+  --help                      Show this message and exit.
+#+END_SRC
+
+Example: 
+- Download all images AND captions from account USER:
+#+BEGIN_SRC sh
 python main.py --user USER
+#+END_SRC
+
+- Download images only from account USER:
+#+BEGIN_SRC sh
+python main.py --user USER --no-captions
+#+END_SRC
+
+-Download captions only from account USER:
+#+BEGIN_SRC sh
+python main.py --user USER --no-images
 #+END_SRC
 
 Print help: 
