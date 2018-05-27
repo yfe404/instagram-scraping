@@ -7,6 +7,18 @@ from bs4 import BeautifulSoup
 
 
 def save_captions(prefix, user, caption_all):
+    """
+    Write a list of captions to files (one file per caption).
+
+    :param prefix: The directory in which the files will be saved
+    :param prefix: str
+    :param user: Username of the account the posts' captions come from
+    (will be used as a prefix in the filenames)
+    :param user: str
+    :param caption_all: A list of captions
+    :param caption_all: list<str>
+    :return: None
+    """
     for idx, caption in enumerate(caption_all):
         filename = '{0}_{1}.txt'.format(user, idx)
         filename = os.path.join(prefix, filename)
@@ -15,7 +27,20 @@ def save_captions(prefix, user, caption_all):
         text_file.write(caption)
         text_file.close()
 
-def download_and_save_images(prefix, user, img_url_all):        
+
+def download_and_save_images(prefix, user, img_url_all):
+    """
+    Download and save a list of images from their urls.
+
+    :param prefix: The directory in which the images will be saved
+    :param prefix: str
+    :param user: Username of the account the posts' images come from
+    (will be used as a prefix in the filenames)
+    :param user: str
+    :param img_url_all: A list of image urls
+    :param img_url_all: list<str>
+    :return: None
+    """
     for idx, img_url in enumerate(img_url_all):
         img_data = requests.get(img_url).content
         filename = '{0}_{1}.jpg'.format(user, idx)
@@ -31,55 +56,63 @@ def download_and_save_images(prefix, user, img_url_all):
 @click.option('--captions/--no-captions', default=True,
               help='Scrap also captions.')
 @click.option('--user', '-u', required=True,
-              help='The account to scrap (all photos and all captions).')
+              help='The account to scrap.')
 def scrap(images, captions, user):
-    """ Scrap photos and captions from posts of a single user """
+    """
+    Scrap photos and captions from posts of a single user.
+
+    :param images: Include images in the data scraped
+    :param images: boolean
+    :param captions: Include captions in the data scraped
+    :param captions: boolean
+    :param user: The account to scrap
+    :param user: str
+    :return: None
+    """
     BASE_URL = 'https://deskgram.org'
     USER = user
+    PATTERN_FOR_IMAGES = {'name': "div", 'attrs': {"class": "post-img"}}
+    PATTERN_FOR_CAPTIONS = {'name': "div", 'attrs': {"class": "post-caption"}}
+    DEST_FOLDER = './{0}'.format(USER)
 
     url = BASE_URL + '/' + USER
-    
-    dest_folder = './{0}'.format(USER)
-    if not os.path.exists(dest_folder):
-        os.makedirs(dest_folder)
 
-    pattern_for_images = {'name':"div", 'attrs':{"class": "post-img"}}
-    pattern_for_captions = {'name':"div", 'attrs':{"class": "post-caption"}}
+    if not os.path.exists(DEST_FOLDER):
+        os.makedirs(DEST_FOLDER)
 
     while True:
-        print ('fetching {0}'.format(url))
+        print('fetching {0}'.format(url))
         r = requests.get(url)
         soup = BeautifulSoup(r.text, 'html.parser')
-        
+
         if images:
             img_url_all = list()
-            images = soup.findAll(**pattern_for_images)
+            images = soup.findAll(**PATTERN_FOR_IMAGES)
             for image in images:
                 img_url = image.img['src'].split('?')[0]
                 img_url_all.append(img_url)
-            print ('Found {0} images.'.format(len(images)))
+            print('Found {0} images.'.format(len(images)))
 
         if captions:
             caption_all = list()
-            captions = soup.findAll(**pattern_for_captions)
+            captions = soup.findAll(**PATTERN_FOR_CAPTIONS)
             for caption in captions:
                 caption_all.append(caption.text)
-            print ('Found {0} captions.'.format(len(captions)))
-
+            print('Found {0} captions.'.format(len(captions)))
 
         links = soup.findAll('a')
-        next_link = list(filter( lambda x: 'next_id' in x['href'], links))
+        next_link = list(filter(lambda x: 'next_id' in x['href'], links))
         if len(next_link) == 0:
             break
         else:
             dest = next_link[0]['href']
             url = BASE_URL + dest
-        
+
     if images:
-        download_and_save_images(dest_folder, USER, img_url_all)
-    
+        download_and_save_images(DEST_FOLDER, USER, img_url_all)
+
     if captions:
-        save_captions(dest_folder, USER, caption_all)
+        save_captions(DEST_FOLDER, USER, caption_all)
 
 
 if __name__ == '__main__':
