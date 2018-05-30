@@ -57,7 +57,9 @@ def download_and_save_images(prefix, user, img_url_all):
               help='Scrap also captions.')
 @click.option('--user', '-u', required=True,
               help='The account to scrap.')
-def scrap(images, captions, user):
+@click.option('--number', '-n', default=10,
+              help='Number of posts to scrap. (newer posts are scraped first).')
+def scrap(images, captions, user, number):
     """
     Scrap photos and captions from posts of a single user.
 
@@ -92,13 +94,22 @@ def scrap(images, captions, user):
             for image in images:
                 img_url = image.img['src'].split('?')[0]
                 img_url_all.append(img_url)
+                if len(img_url_all) == number and not captions:
+                    break
             print('Found {0} images.'.format(len(images)))
+            if len(img_url_all) == number and not captions:
+                break
 
         if captions:
             captions = soup.findAll(**PATTERN_FOR_CAPTIONS)
             for caption in captions:
                 caption_all.append(caption.text)
+                print(len(caption_all))
+                if len(caption_all) == number:
+                    break
             print('Found {0} captions.'.format(len(captions)))
+            if len(caption_all) == number:
+                break
 
         links = soup.findAll('a')
         next_link = list(filter(lambda x: 'next_id' in x['href'], links))
