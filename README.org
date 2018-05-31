@@ -12,8 +12,9 @@ Usage: main.py [OPTIONS]
 Options:
   --images / --no-images      Scrap also images.
   --captions / --no-captions  Scrap also captions.
-  -u, --user TEXT             The account to scrap (all photos and all
-                              captions).  [required]
+  -u, --user TEXT             The account to scrap.  [required]
+  -n, --number INTEGER        Number of posts to scrap. (newer posts are
+                              scraped first).
   --help                      Show this message and exit.
 #+END_SRC
 
