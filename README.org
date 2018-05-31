@@ -2,12 +2,12 @@
 Python script to scrap an entire profile from instagram (using Deskgram). Download the images, the captions or both in only one command!
 
 ** Usage
+Scrap all the photos and captions from an instagram account with just its username:
 
-Scrap all photos and captions from a USER:
 #+BEGIN_SRC sh
 Usage: main.py [OPTIONS]
 
-  Scrap all the photos and captions from an instagram account with just its username:
+   Scrap the photos and captions from the posts of a single user
 
 Options:
   --images / --no-images      Scrap also images.
