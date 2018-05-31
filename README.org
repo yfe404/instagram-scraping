@@ -1,4 +1,4 @@
-* Deskgram-Scraping
+* Instagram-Scraping
 Python script to scrap an entire profile from instagram (using Deskgram). Download the images, the captions or both in only one command!
 
 ** Usage
