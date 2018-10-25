@@ -42,7 +42,7 @@ def download_and_save_images(prefix, user, img_url_all):
     :return: None
     """
     for idx, img_url in enumerate(img_url_all):
-        img_data = requests.get(img_url).content
+        img_data = requests.get(img_url, verify=False).content
         filename = '{0}_{1}.jpg'.format(user, idx)
         filename = os.path.join(prefix, filename)
         print('saving image {0}'.format(filename))
@@ -86,7 +86,7 @@ def scrap(images, captions, user, number):
 
     while True:
         print('fetching {0}'.format(url))
-        r = requests.get(url)
+        r = requests.get(url, verify=False)
         soup = BeautifulSoup(r.text, 'html.parser')
 
         if images:
