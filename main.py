@@ -72,6 +72,7 @@ def scrap(images, captions, user, number):
     :return: None
     """
     BASE_URL = 'https://deskgram.org'
+    SIG = "?_nc_ht=scontent-dfw5-1.cdninstagram.com"
     USER = user
     PATTERN_FOR_IMAGES = {'name': "div", 'attrs': {"class": "post-img"}}
     PATTERN_FOR_CAPTIONS = {'name': "div", 'attrs': {"class": "post-caption"}}
@@ -93,6 +94,7 @@ def scrap(images, captions, user, number):
             images = soup.findAll(**PATTERN_FOR_IMAGES)
             for image in images:
                 img_url = image.img['src'].split('?')[0]
+                img_url += SIG
                 img_url_all.append(img_url)
                 if len(img_url_all) == number and not captions:
                     break
